@@ -1,22 +1,19 @@
 # README
 
-> **Note:** This readme template is based on one from the [Good Docs Project](https://thegooddocsproject.dev). You can find it and a guide to filling it out [here](https://gitlab.com/tgdp/templates/-/tree/main/readme). (_Erase this note after filling out the readme._)
-
 <h1 align="center">
   <br>
   <a href="https://openpecha.org"><img src="https://avatars.githubusercontent.com/u/82142807?s=400&u=19e108a15566f3a1449bafb03b8dd706a72aebcd&v=4" alt="OpenPecha" width="150"></a>
   <br>
 </h1>
 
-## _Project Name_
-_The project name should match its code's capability so that new users can easily understand what it does._
+## _Translation Runner_
+_Translation Runner is a tool for running translations for Pecha Texts from OpenPecha using Agentic Translation._
 
 ## Owner(s)
 
 _Change to the owner(s) of the new repo. (This template's owners are:)_
-- [@ngawangtrinley](https://github.com/ngawangtrinley)
-- [@mikkokotila](https://github.com/mikkokotila)
-- [@evanyerburgh](https://github.com/evanyerburgh)
+- [@tenzin3](https://github.com/tenzin3)
+
 
 
 ## Table of contents
@@ -35,37 +32,37 @@ _Change to the owner(s) of the new repo. (This template's owners are:)_
 ## Project description
 _Use one of these:_
 
-With _Project Name_ you can _verb_ _noun_...
+With _Translation Runner_ you can run translations for Commentary Texts from OpenPecha in any language.
 
-_Project Name_ helps you _verb_ _noun_...
+_Translation Runner_ helps you run translations for Root Texts from OpenPecha in any language.
 
 
 ## Who this project is for
-This project is intended for _target user_ who wants to _user objective_.
+This project is intended for Data Engineer who will use it get translations for Root Texts and Commentary Texts and possibly uploaded to pecha.org.
 
 
 ## Project dependencies
-Before using _Project Name_, ensure you have:
-* python _version_
-* _Prerequisite 2_
-* _Prerequisite 3..._
+Before using _Translation Runner_, ensure you have:
+* python >= 3.10
+* _Openpecha backend_
+* _OpenPecha Toolkit_
 
 
 ## Instructions for use
-Get started with _Project Name_ by _(write the first step a user needs to start using the project. Use a verb to start.)_.
+Get started with _Translation Runner_ by _(write the first step a user needs to start using the project. Use a verb to start.)_.
 
 
 ### Install _Project Name_
-1. _Write the step here._ 
+1. _Write the step here._
 
-    _Explanatory text here_ 
-    
+    _Explanatory text here_
+
     _(Optional: Include a code sample or screenshot that helps your users complete this step.)_
 
 2. _Write the step here._
- 
-    a. _Substep 1_ 
-    
+
+    a. _Substep 1_
+
     b. _Substep 2_
 
 
