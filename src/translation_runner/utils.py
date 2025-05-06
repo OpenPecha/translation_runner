@@ -5,7 +5,7 @@ from pathlib import Path
 
 import requests
 
-API_BASE_URL = "https://api-aq25662yyq-uc.a.run.app/pecha/"
+from translation_runner.config import API_BASE_URL
 
 
 def download_pecha(pecha_id: str, output_path: Path) -> Path:
