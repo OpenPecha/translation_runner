@@ -5,10 +5,10 @@ from pathlib import Path
 
 import requests
 
-from translation_runner.config import DOWNLOAD_PECHA_PROD
+from translation_runner.config import DOWNLOAD_PECHA_DEV, DOWNLOAD_PECHA_PROD
 
 
-def download_pecha(pecha_id: str, output_path: Path) -> Path:
+def download_pecha(pecha_id: str, output_path: Path, development: bool = True) -> Path:
     """
     Download a pecha from the OpenPecha API.
     """
@@ -17,7 +17,11 @@ def download_pecha(pecha_id: str, output_path: Path) -> Path:
         shutil.rmtree(pecha_path)
     pecha_path.mkdir(parents=True, exist_ok=True)
 
-    url = f"{DOWNLOAD_PECHA_PROD}{pecha_id}"
+    url = (
+        f"{DOWNLOAD_PECHA_PROD}{pecha_id}"
+        if not development
+        else f"{DOWNLOAD_PECHA_DEV}{pecha_id}"
+    )
     headers = {"Accept": "application/zip"}
 
     try:
