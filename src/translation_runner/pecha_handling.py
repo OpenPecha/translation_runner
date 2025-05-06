@@ -4,7 +4,7 @@ from openpecha.alignment.commentary_transfer import CommentaryAlignmentTransfer
 from openpecha.pecha import Pecha
 
 from translation_runner.config import OUTPUT_PATH
-from translation_runner.utils import download_pecha
+from translation_runner.utils import download_pecha, get_annotations
 
 
 def get_pecha(pecha_id: str, output_path: Path) -> Pecha:
@@ -12,8 +12,19 @@ def get_pecha(pecha_id: str, output_path: Path) -> Pecha:
     return Pecha.from_path(pecha_path)
 
 
-def get_root_alignment_id(commentary_pecha: Pecha) -> str:
-    pass
+def get_root_alignment_id(commentary_pecha: Pecha, alignment_id: str) -> str:
+    """
+    Return the root alignment id related to the commentary alignment id
+    """
+    ann_models = get_annotations(commentary_pecha.id)
+    for ann_model in ann_models:
+        if ann_model.path == alignment_id:
+            if ann_model.aligned_to:
+                return ann_model.aligned_to.alignment_id
+
+            raise ValueError(
+                f"Commentary lignment id {alignment_id} is not aligned to any root alignment id"
+            )
 
 
 def get_commentary_alignment_id(commentary_pecha: Pecha) -> str:
@@ -30,6 +41,7 @@ def get_alignment(root_id: str, commentary_id: str, output_path: Path = OUTPUT_P
     commentary_pecha = get_pecha(commentary_id, output_path)
 
     commentary_alignment_id = get_commentary_alignment_id(commentary_pecha)
+    root_alignment_id = get_root_alignment_id(commentary_pecha, commentary_alignment_id)
     return CommentaryAlignmentTransfer().get_serialized_commentary(
-        root_pecha, commentary_pecha, commentary_alignment_id
+        root_pecha, root_alignment_id, commentary_pecha, commentary_alignment_id
     )
