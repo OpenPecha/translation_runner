@@ -5,7 +5,7 @@ from pathlib import Path
 
 import requests
 
-from translation_runner.config import API_BASE_URL
+from translation_runner.config import DOWNLOAD_PECHA_PROD
 
 
 def download_pecha(pecha_id: str, output_path: Path) -> Path:
@@ -17,7 +17,7 @@ def download_pecha(pecha_id: str, output_path: Path) -> Path:
         shutil.rmtree(pecha_path)
     pecha_path.mkdir(parents=True, exist_ok=True)
 
-    url = f"{API_BASE_URL}{pecha_id}"
+    url = f"{DOWNLOAD_PECHA_PROD}{pecha_id}"
     headers = {"Accept": "application/zip"}
 
     try:
