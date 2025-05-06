@@ -5,7 +5,12 @@ from pathlib import Path
 
 import requests
 
-from translation_runner.config import DOWNLOAD_PECHA_DEV, DOWNLOAD_PECHA_PROD
+from translation_runner.config import (
+    DOWNLOAD_PECHA_DEV,
+    DOWNLOAD_PECHA_PROD,
+    GET_ANNOTATION_DEV,
+    GET_ANNOTATION_PROD,
+)
 
 
 def download_pecha(pecha_id: str, output_path: Path, development: bool = True) -> Path:
@@ -40,3 +45,24 @@ def download_pecha(pecha_id: str, output_path: Path, development: bool = True) -
         ) from e
 
     return pecha_path
+
+
+def get_annotations(pecha_id: str, development: bool = True):
+    """
+    Get annotations from the OpenPecha API.
+    """
+    url = (
+        f"{GET_ANNOTATION_DEV}{pecha_id}"
+        if development
+        else f"{GET_ANNOTATION_PROD}{pecha_id}"
+    )
+
+    headers = {"Accept": "application/json"}
+
+    try:
+        response = requests.get(url, headers=headers, stream=True, timeout=30)
+        response.raise_for_status()
+    except requests.RequestException as e:
+        raise Exception(f"Failed to get annotations for pecha '{pecha_id}': {e}") from e
+
+    return response.json()
