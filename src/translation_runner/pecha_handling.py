@@ -16,15 +16,17 @@ def get_root_alignment_id(commentary_pecha: Pecha, alignment_id: str) -> str:
     """
     Return the root alignment id related to the commentary alignment id
     """
-    ann_models = get_annotations(commentary_pecha.id)
-    for ann_model in ann_models:
-        if ann_model.path == alignment_id:
-            if ann_model.aligned_to:
-                return ann_model.aligned_to.alignment_id
+    anns = list(get_annotations(commentary_pecha.id).values())
+    for ann_model in anns:
+        if ann_model["path"] == alignment_id:
+            if ann_model["aligned_to"]:
+                return ann_model["aligned_to"]["alignment_id"]
 
             raise ValueError(
-                f"Commentary lignment id {alignment_id} is not aligned to any root alignment id"
+                f"Commentary alignment id {alignment_id} is not aligned to any root alignment id"
             )
+
+    raise ValueError(f"Commentary alignment id {alignment_id} not found")
 
 
 def get_commentary_alignment_id(commentary_pecha: Pecha) -> str:
@@ -32,7 +34,9 @@ def get_commentary_alignment_id(commentary_pecha: Pecha) -> str:
     Return the first alignment annotation layer from the Commentary Pecha
     """
     alignment_layer_path = next(commentary_pecha.layer_path.rglob("alignment*.json"))
-    alignment_id = alignment_layer_path.relative_to(commentary_pecha.layer_path).name
+    alignment_id = alignment_layer_path.relative_to(
+        commentary_pecha.layer_path
+    ).as_posix()
     return alignment_id
 
 
@@ -45,3 +49,7 @@ def get_alignment(root_id: str, commentary_id: str, output_path: Path = OUTPUT_P
     return CommentaryAlignmentTransfer().get_serialized_commentary(
         root_pecha, root_alignment_id, commentary_pecha, commentary_alignment_id
     )
+
+
+if __name__ == "__main__":
+    print(get_alignment("I00BBCC2A", "ID9100D84"))
