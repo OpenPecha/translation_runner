@@ -49,7 +49,3 @@ def get_alignment(root_id: str, commentary_id: str, output_path: Path = OUTPUT_P
     return CommentaryAlignmentTransfer().get_serialized_commentary(
         root_pecha, root_alignment_id, commentary_pecha, commentary_alignment_id
     )
-
-
-if __name__ == "__main__":
-    print(get_alignment("I00BBCC2A", "ID9100D84"))
