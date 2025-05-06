@@ -10,17 +10,7 @@ API_BASE_URL = "https://api-aq25662yyq-uc.a.run.app/pecha/"
 
 def download_pecha(pecha_id: str, output_path: Path) -> Path:
     """
-    Download a pecha from the OpenPecha API and extract it to the specified output path.
-
-    Args:
-        pecha_id (str): The ID of the pecha to download.
-        output_path (Path): The directory where the pecha should be extracted.
-
-    Returns:
-        Path: The path to the extracted pecha directory.
-
-    Raises:
-        Exception: If the download or extraction fails.
+    Download a pecha from the OpenPecha API.
     """
     pecha_path = output_path / pecha_id
     if pecha_path.exists():
