@@ -12,12 +12,16 @@ def get_pecha(pecha_id: str, output_path: Path) -> Pecha:
     return Pecha.from_path(pecha_path)
 
 
-def get_commentary_alignment_id(pecha: Pecha) -> str:
+def get_root_alignment_id(commentary_pecha: Pecha) -> str:
+    pass
+
+
+def get_commentary_alignment_id(commentary_pecha: Pecha) -> str:
     """
     Return the first alignment annotation layer from the Commentary Pecha
     """
-    alignment_layer_path = next(pecha.layer_path.rglob("alignment*.json"))
-    alignment_id = alignment_layer_path.relative_to(pecha.layer_path).name
+    alignment_layer_path = next(commentary_pecha.layer_path.rglob("alignment*.json"))
+    alignment_id = alignment_layer_path.relative_to(commentary_pecha.layer_path).name
     return alignment_id
 
 
