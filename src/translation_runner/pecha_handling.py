@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from openpecha.alignment.commentary_transfer import CommentaryAlignmentTransfer
+from openpecha.alignment.commentary_transfer import parse_root_mapping
 from openpecha.pecha import Pecha, get_anns
 from stam import AnnotationStore
 
@@ -56,9 +56,11 @@ def get_alignment(root_id: str, commentary_id: str, output_path: Path = OUTPUT_P
     root_anns = get_pecha_anns(root_pecha, root_alignment_id)
     commentary_anns = get_pecha_anns(commentary_pecha, commentary_alignment_id)
 
-    return root_anns, commentary_anns
+    segments = []
+    for commentary_ann in commentary_anns:
+        commentary_text = commentary_ann["text"]
+        root_idx = parse_root_mapping(commentary_ann["root_idx_mapping"])[0]
 
-
-if __name__ == "__main__":
-    res = get_alignment("IDDA32A00", "I92B4BA6C")
-    print(res)
+        root_text = root_anns[root_idx - 1]["text"]
+        segments.append({"root": root_text, "commentary": commentary_text})
+    return segments
