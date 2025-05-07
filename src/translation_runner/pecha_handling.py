@@ -1,7 +1,8 @@
 from pathlib import Path
 
 from openpecha.alignment.commentary_transfer import CommentaryAlignmentTransfer
-from openpecha.pecha import Pecha
+from openpecha.pecha import Pecha, get_anns
+from stam import AnnotationStore
 
 from translation_runner.config import OUTPUT_PATH
 from translation_runner.utils import download_pecha, get_annotations
@@ -46,6 +47,19 @@ def get_alignment(root_id: str, commentary_id: str, output_path: Path = OUTPUT_P
 
     commentary_alignment_id = get_commentary_alignment_id(commentary_pecha)
     root_alignment_id = get_root_alignment_id(commentary_pecha, commentary_alignment_id)
-    return CommentaryAlignmentTransfer().get_serialized_commentary(
-        root_pecha, root_alignment_id, commentary_pecha, commentary_alignment_id
+
+    root_anns = get_anns(
+        AnnotationStore(file=str(root_pecha.layer_path / f"{root_alignment_id}.json"))
     )
+    commentary_anns = get_anns(
+        AnnotationStore(
+            file=str(commentary_pecha.layer_path / f"{commentary_alignment_id}.json")
+        )
+    )
+
+    return root_anns, commentary_anns
+
+
+if __name__ == "__main__":
+    res = get_alignment("IDDA32A00", "I92B4BA6C")
+    print(res)
