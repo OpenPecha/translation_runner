@@ -13,6 +13,11 @@ def get_pecha(pecha_id: str, output_path: Path) -> Pecha:
     return Pecha.from_path(pecha_path)
 
 
+def get_pecha_anns(pecha: Pecha, annotation_path: str) -> dict:
+    layer_path = pecha.layer_path / f"{annotation_path}.json"
+    return get_anns(AnnotationStore(file=str(layer_path)))
+
+
 def get_root_alignment_id(commentary_pecha: Pecha, alignment_id: str) -> str:
     """
     Return the root alignment id related to the commentary alignment id
@@ -48,14 +53,8 @@ def get_alignment(root_id: str, commentary_id: str, output_path: Path = OUTPUT_P
     commentary_alignment_id = get_commentary_alignment_id(commentary_pecha)
     root_alignment_id = get_root_alignment_id(commentary_pecha, commentary_alignment_id)
 
-    root_anns = get_anns(
-        AnnotationStore(file=str(root_pecha.layer_path / f"{root_alignment_id}.json"))
-    )
-    commentary_anns = get_anns(
-        AnnotationStore(
-            file=str(commentary_pecha.layer_path / f"{commentary_alignment_id}.json")
-        )
-    )
+    root_anns = get_pecha_anns(root_pecha, root_alignment_id)
+    commentary_anns = get_pecha_anns(commentary_pecha, commentary_alignment_id)
 
     return root_anns, commentary_anns
 
