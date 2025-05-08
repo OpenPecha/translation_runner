@@ -83,13 +83,11 @@ def create_google_doc(title: str, texts: List[str]) -> Optional[Dict[str, str]]:
     try:
         creds = get_credentials()
         service = build("docs", "v1", credentials=creds)
-        doc_links = {}
         try:
-            result = build_numbered_list_document(service, title, texts)
-            doc_links[result["title"]] = result["url"]
+            res = build_numbered_list_document(service, title, texts)
         except Exception as e:
             logging.error(f"Error creating Google Doc: {e}")
-        return doc_links
+        return res
     except HttpError as error:
         logging.error(f"Google Docs API error: {error}")
     except Exception as e:
