@@ -34,7 +34,7 @@ def get_credentials(
     return creds
 
 
-def create_doc_from_file(service, title: str, texts: List[str]) -> Dict[str, str]:
+def create_doc(service, title: str, texts: List[str]) -> Dict[str, str]:
     """Create a Google Doc with the given title and texts, return doc info."""
     content = "\n".join(texts)
     doc = service.documents().create(body={"title": title}).execute()
@@ -59,7 +59,8 @@ def create_doc_from_file(service, title: str, texts: List[str]) -> Dict[str, str
     ).execute()
     return {
         "title": title,
-        "url": f"https://docs.google.com/document/d/{doc_id}/edit",  # noqa
+        "url": f"https://docs.google.com/document/d/{doc_id}/edit",
+        "document_id": doc_id,
     }
 
 
@@ -70,7 +71,7 @@ def create_google_doc(title: str, texts: List[str]) -> Optional[Dict[str, str]]:
         service = build("docs", "v1", credentials=creds)
         doc_links = {}
         try:
-            result = create_doc_from_file(service, title, texts)
+            result = create_doc(service, title, texts)
             doc_links[result["title"]] = result["url"]
         except Exception as e:
             logging.error(f"Error creating Google Doc: {e}")
