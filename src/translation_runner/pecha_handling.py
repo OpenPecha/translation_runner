@@ -56,11 +56,11 @@ def get_alignment(root_pecha: Pecha, commentary_pecha: Pecha):
     root_anns = get_pecha_anns(root_pecha, root_alignment_id)
     commentary_anns = get_pecha_anns(commentary_pecha, commentary_alignment_id)
 
-    segments = []
+    alignment = []
     for commentary_ann in commentary_anns:
         commentary_text = commentary_ann["text"]
         root_idx = parse_root_mapping(commentary_ann["root_idx_mapping"])[0]
 
         root_text = root_anns[root_idx - 1]["text"]
-        segments.append({"root": root_text, "commentary": commentary_text})
-    return segments
+        alignment.append({"root": root_text, "commentary": commentary_text})
+    return alignment

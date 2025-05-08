@@ -24,8 +24,8 @@ def test_get_alignment():
         mock_get_commentary_alignment_id.return_value = "4249/alignment-8899"
         mock_get_root_alignment_id.return_value = "4885/alignment-298F"
 
-        segments = get_alignment(root_pecha, commentary_pecha)
-        assert segments == [
+        alignment = get_alignment(root_pecha, commentary_pecha)
+        assert alignment == [
             {"root": "ཚིག་གྲུབ་དང་པོ།", "commentary": "འགྲེལ་བཤད་དང་པོ།"},
             {"root": "ཚིག་གྲུབ་གཉིས་པ།  ", "commentary": "འགྲེལ་བཤད་གཉིས་པ།"},
             {"root": "ཚིག་གྲུབ་གསུམ་པ།", "commentary": "འགྲེལ་བཤད་གསུམ་པ།"},
