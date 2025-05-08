@@ -36,7 +36,9 @@ def get_credentials(
     return creds
 
 
-def create_doc(service, title: str, texts: List[str]) -> Dict[str, str]:
+def build_numbered_list_document(
+    service, title: str, texts: List[str]
+) -> Dict[str, str]:
     """
     Create a Google Doc with the given title and texts, storing each text as a true numbered list item.
     """
@@ -83,7 +85,7 @@ def create_google_doc(title: str, texts: List[str]) -> Optional[Dict[str, str]]:
         service = build("docs", "v1", credentials=creds)
         doc_links = {}
         try:
-            result = create_doc(service, title, texts)
+            result = build_numbered_list_document(service, title, texts)
             doc_links[result["title"]] = result["url"]
         except Exception as e:
             logging.error(f"Error creating Google Doc: {e}")
