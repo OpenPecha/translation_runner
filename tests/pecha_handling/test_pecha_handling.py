@@ -15,18 +15,16 @@ def test_get_alignment():
     root_pecha = Pecha.from_path(DATA_DIR / root_id)
     commentary_pecha = Pecha.from_path(DATA_DIR / commentary_id)
 
-    with patch("translation_runner.pecha_handling.get_pecha") as mock_get_pecha, patch(
+    with patch(
         "translation_runner.pecha_handling.get_commentary_alignment_id"
     ) as mock_get_commentary_alignment_id, patch(
         "translation_runner.pecha_handling.get_root_alignment_id"
     ) as mock_get_root_alignment_id:
 
-        # Patch get_pecha to return root_pecha for the first call, commentary_pecha for the second
-        mock_get_pecha.side_effect = [root_pecha, commentary_pecha]
         mock_get_commentary_alignment_id.return_value = "4249/alignment-8899"
         mock_get_root_alignment_id.return_value = "4885/alignment-298F"
 
-        segments = get_alignment(root_id, commentary_id)
+        segments = get_alignment(root_pecha, commentary_pecha)
         assert segments == [
             {"root": "ཚིག་གྲུབ་དང་པོ།", "commentary": "འགྲེལ་བཤད་དང་པོ།"},
             {"root": "ཚིག་གྲུབ་གཉིས་པ།  ", "commentary": "འགྲེལ་བཤད་གཉིས་པ།"},

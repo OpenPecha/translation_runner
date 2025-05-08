@@ -4,7 +4,6 @@ from openpecha.alignment.commentary_transfer import parse_root_mapping
 from openpecha.pecha import Pecha, get_anns
 from stam import AnnotationStore
 
-from translation_runner.config import OUTPUT_PATH
 from translation_runner.utils import download_pecha, get_annotations
 
 
@@ -50,10 +49,7 @@ def get_commentary_alignment_id(commentary_pecha: Pecha) -> str:
     return alignment_id
 
 
-def get_alignment(root_id: str, commentary_id: str, output_path: Path = OUTPUT_PATH):
-    root_pecha = get_pecha(root_id, output_path)
-    commentary_pecha = get_pecha(commentary_id, output_path)
-
+def get_alignment(root_pecha: Pecha, commentary_pecha: Pecha):
     commentary_alignment_id = get_commentary_alignment_id(commentary_pecha)
     root_alignment_id = get_root_alignment_id(commentary_pecha, commentary_alignment_id)
 
