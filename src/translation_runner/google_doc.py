@@ -22,18 +22,24 @@ def get_credentials(
     """
     Obtain Google API credentials, refreshing or requesting as needed.
     """
-    creds = None
-    if os.path.exists(token_path):
-        creds = Credentials.from_authorized_user_file(token_path, SCOPES)
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-        else:
-            flow = InstalledAppFlow.from_client_secrets_file(credentials_path, SCOPES)
-            creds = flow.run_local_server(port=0)
-        with open(token_path, "w") as token:
-            token.write(creds.to_json())
-    return creds
+    try:
+        creds = None
+        if os.path.exists(token_path):
+            creds = Credentials.from_authorized_user_file(token_path, SCOPES)
+        if not creds or not creds.valid:
+            if creds and creds.expired and creds.refresh_token:
+                creds.refresh(Request())
+            else:
+                flow = InstalledAppFlow.from_client_secrets_file(
+                    credentials_path, SCOPES
+                )
+                creds = flow.run_local_server(port=0)
+            with open(token_path, "w") as token:
+                token.write(creds.to_json())
+        return creds
+    except FileNotFoundError as e:
+        logging.error(f"Failed to obtain Google API credentials: {e}")
+        raise FileNotFoundError(f"Failed to obtain Google API credentials: {e}")
 
 
 def build_numbered_list_document(
