@@ -40,7 +40,7 @@ def build_numbered_list_document(
     service, title: str, texts: List[str]
 ) -> Dict[str, str]:
     """
-    Create a Google Doc with the given title and texts, storing each text as a true numbered list item.
+    Create a Google Doc with storing each text as a true numbered list item.
     """
     doc = service.documents().create(body={"title": title}).execute()
     doc_id = doc.get("documentId")
@@ -71,7 +71,7 @@ def build_numbered_list_document(
     ).execute()
     return {
         "title": title,
-        "url": f"https://docs.google.com/document/d/{doc_id}/edit",
+        "url": f"https://docs.google.com/document/d/{doc_id}",
         "document_id": doc_id,
     }
 
