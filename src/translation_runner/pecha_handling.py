@@ -9,11 +9,17 @@ from translation_runner.utils import download_pecha, get_annotations
 
 
 def get_pecha(pecha_id: str, output_path: Path) -> Pecha:
+    """
+    Download and load Pecha.
+    """
     pecha_path = download_pecha(pecha_id, output_path)
     return Pecha.from_path(pecha_path)
 
 
 def get_pecha_anns(pecha: Pecha, annotation_path: str) -> dict:
+    """
+    Read all annotations from a given annotation layer.
+    """
     layer_path = pecha.layer_path / f"{annotation_path}.json"
     return get_anns(AnnotationStore(file=str(layer_path)))
 
@@ -39,10 +45,8 @@ def get_commentary_alignment_id(commentary_pecha: Pecha) -> str:
     """
     Return the first alignment annotation layer from the Commentary Pecha
     """
-    alignment_layer_path = next(commentary_pecha.layer_path.rglob("alignment*.json"))
-    alignment_id = alignment_layer_path.relative_to(
-        commentary_pecha.layer_path
-    ).as_posix()
+    layer_path = next(commentary_pecha.layer_path.rglob("alignment*.json"))
+    alignment_id = layer_path.relative_to(commentary_pecha.layer_path).as_posix()
     return alignment_id
 
 
