@@ -17,7 +17,7 @@ Intro
 1. _Write the step here._
 2. _Write the step here._
 
-## 4. Short how-to 
+## 4. Short how-to
 
 1. _Write the step here._
 2. _Write the step here._
