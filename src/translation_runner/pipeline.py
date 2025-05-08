@@ -25,3 +25,22 @@ def get_commentary_translation(
     )
 
     return commentary_translation
+
+
+if __name__ == "__main__":
+    from translation_runner.utils import write_json
+
+    alignment = [
+        {"root": "ཚིག་གྲུབ་དང་པོ།", "commentary": "འགྲེལ་བཤད་དང་པོ།"},
+        {"root": "ཚིག་གྲུབ་གཉིས་པ།  ", "commentary": "འགྲེལ་བཤད་གཉིས་པ།"},
+        {"root": "ཚིག་གྲུབ་གསུམ་པ།", "commentary": "འགྲེལ་བཤད་གསུམ་པ།"},
+    ]
+
+    commentary_translation = translate_commentaries(
+        commentary_root_pairs=alignment,
+        target_language="English",
+        num_threads=10,
+        use_cache=False,
+    )
+
+    write_json(commentary_translation, "commentary_translation.json")
