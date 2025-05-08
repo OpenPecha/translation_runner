@@ -19,7 +19,9 @@ logging.basicConfig(level=logging.INFO)
 def get_credentials(
     token_path: str = TOKEN_PATH, credentials_path: str = CREDENTIALS_PATH
 ) -> Credentials:
-    """Obtain Google API credentials, refreshing or requesting as needed."""
+    """
+    Obtain Google API credentials, refreshing or requesting as needed.
+    """
     creds = None
     if os.path.exists(token_path):
         creds = Credentials.from_authorized_user_file(token_path, SCOPES)
@@ -35,25 +37,33 @@ def get_credentials(
 
 
 def create_doc(service, title: str, texts: List[str]) -> Dict[str, str]:
-    """Create a Google Doc with the given title and texts, return doc info."""
-    content = "\n".join(texts)
+    """
+    Create a Google Doc with the given title and texts, storing each text as a true numbered list item.
+    """
     doc = service.documents().create(body={"title": title}).execute()
     doc_id = doc.get("documentId")
-    requests = [
-        {"insertText": {"location": {"index": 1}, "text": content}},
-        {
-            "updateParagraphStyle": {
-                "range": {"startIndex": 1, "endIndex": len(content) + 1},
-                "paragraphStyle": {
-                    "namedStyleType": "NORMAL_TEXT",
-                    "spaceAbove": {"magnitude": 0, "unit": "PT"},
-                    "spaceBelow": {"magnitude": 0, "unit": "PT"},
-                    "lineSpacing": 115,
-                },
-                "fields": "namedStyleType,spaceAbove,spaceBelow,lineSpacing",
+
+    # Insert all texts as separate paragraphs
+    requests = []
+    insert_index = 1
+    for text in texts:
+        paragraph = text + "\n"
+        requests.append(
+            {"insertText": {"location": {"index": insert_index}, "text": paragraph}}
+        )
+        insert_index += len(paragraph)
+
+    # Apply numbered list style using createParagraphBullets
+    if texts:
+        requests.append(
+            {
+                "createParagraphBullets": {
+                    "range": {"startIndex": 1, "endIndex": insert_index},
+                    "bulletPreset": "NUMBERED_DECIMAL_ALPHA_ROMAN",
+                }
             }
-        },
-    ]
+        )
+
     service.documents().batchUpdate(
         documentId=doc_id, body={"requests": requests}
     ).execute()
@@ -65,7 +75,9 @@ def create_doc(service, title: str, texts: List[str]) -> Dict[str, str]:
 
 
 def create_google_doc(title: str, texts: List[str]) -> Optional[Dict[str, str]]:
-    """High-level API: create a Google Doc and return its title and URL."""
+    """
+    High-level API: create a Google Doc and return its title and URL.
+    """
     try:
         creds = get_credentials()
         service = build("docs", "v1", credentials=creds)
