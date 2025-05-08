@@ -4,7 +4,7 @@ from openpecha.alignment.commentary_transfer import parse_root_mapping
 from openpecha.pecha import Pecha, get_anns
 from stam import AnnotationStore
 
-from translation_runner.utils import download_pecha, get_annotations
+from translation_runner.openpecha_api import download_pecha, get_annotations
 
 
 def get_pecha(pecha_id: str, output_path: Path) -> Pecha:
