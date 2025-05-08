@@ -20,7 +20,10 @@ classifiers = [
 dependencies = [
   "requests == 2.32.3",
   "openpecha @ git+https://github.com/OpenPecha/toolkit-v2.git@5ed188f22682c15814592845b0140ecf24c91f0f",
-  "claude_translator @ git+https://github.com/OpenPecha/commentary_translate.git@d405088c478eaf446d32eb0fc486fe4c8dccbb00"
+  "claude_translator @ git+https://github.com/OpenPecha/commentary_translate.git@d405088c478eaf446d32eb0fc486fe4c8dccbb00",
+  "google-auth",
+  "google-auth-oauthlib",
+  "google-api-python-client",
 ]
 
 [project.optional-dependencies]
