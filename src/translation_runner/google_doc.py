@@ -12,7 +12,11 @@ from googleapiclient.http import MediaIoBaseDownload
 from translation_runner.config import get_logger
 
 # --- Constants ---
-SCOPES = ["https://www.googleapis.com/auth/documents"]
+SCOPES = [
+    "https://www.googleapis.com/auth/documents",
+    "https://www.googleapis.com/auth/drive.readonly",
+    "https://www.googleapis.com/auth/drive",
+]
 TOKEN_PATH = "token.json"
 CREDENTIALS_PATH = "credentials.json"
 
