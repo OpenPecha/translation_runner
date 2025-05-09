@@ -1,4 +1,5 @@
 import io
+import json
 import shutil
 import zipfile
 from pathlib import Path
@@ -76,14 +77,28 @@ def create_pecha(docx_file: str | Path, metadata: dict, development: bool = True
     """
     url = CREATE_PECHA_DEV if development else CREATE_PECHA_PROD
 
-    data = {"metadata": metadata, "annotation_id": None}
+    if isinstance(docx_file, str):
+        docx_file = Path(docx_file)
 
     try:
         with open(docx_file, "rb") as f:
-            files = {"text": f}
+            files = {
+                "text": (
+                    docx_file.name,
+                    f,
+                    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                )
+            }
+            data = {"metadata": json.dumps(metadata), "annotation_id": ""}
+
             response = requests.post(url, files=files, data=data, timeout=60)
             response.raise_for_status()
             return response.json()
+
+    except requests.HTTPError as e:
+        print("Server returned error response:")
+        print(response.text)
+        raise Exception(f"Failed to create pecha: {e}") from e
     except requests.RequestException as e:
         raise Exception(f"Failed to create pecha: {e}") from e
 
@@ -98,6 +113,7 @@ if __name__ == "__main__":
         "source_url": None,
         "source": "commentary alignment",
         "commentary_of": "I00BBCC2A",
-        "document_id": "17OXNEGGNVFc6E9FA0ofzrW2pTZEM7_ahBCSk4HGvFsM",
+        "document_id": "d1",
     }
-    create_pecha(docx_file, metadata)
+    res = create_pecha(docx_file, metadata)
+    print(res)
