@@ -1,5 +1,6 @@
-import logging
+import io
 import os
+from pathlib import Path
 from typing import Dict, List, Optional
 
 from google.auth.transport.requests import Request
@@ -7,13 +8,20 @@ from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
+from googleapiclient.http import MediaIoBaseDownload
+
+from translation_runner.config import get_logger
 
 # --- Constants ---
-SCOPES = ["https://www.googleapis.com/auth/documents"]
+SCOPES = [
+    "https://www.googleapis.com/auth/documents",
+    "https://www.googleapis.com/auth/drive.readonly",
+    "https://www.googleapis.com/auth/drive",
+]
 TOKEN_PATH = "token.json"
 CREDENTIALS_PATH = "credentials.json"
 
-logging.basicConfig(level=logging.INFO)
+logger = get_logger(__name__)
 
 
 def get_credentials(
@@ -38,7 +46,7 @@ def get_credentials(
                 token.write(creds.to_json())
         return creds
     except FileNotFoundError as e:
-        logging.error(f"Failed to obtain Google API credentials: {e}")
+        logger.error(f"Failed to obtain Google API credentials: {e}")
         raise FileNotFoundError(f"Failed to obtain Google API credentials: {e}")
 
 
@@ -92,10 +100,58 @@ def create_google_doc(title: str, texts: List[str]) -> Optional[Dict[str, str]]:
         try:
             res = build_numbered_list_document(service, title, texts)
         except Exception as e:
-            logging.error(f"Error creating Google Doc: {e}")
+            logger.error(f"Error creating Google Doc: {e}")
         return res
     except HttpError as error:
-        logging.error(f"Google Docs API error: {error}")
+        logger.error(f"Google Docs API error: {error}")
     except Exception as e:
-        logging.error(f"Unexpected error: {e}")
+        logger.error(f"Unexpected error: {e}")
     return None
+
+
+def download_doc(doc_id: str, output_path: str | Path):
+    """
+    Download a Google Doc as a .docx file and save it to disk.
+
+    Args:
+        doc_id (str): The ID of the Google Document to download.
+        output_path (Path |str): File path to save the downloaded document.
+    """
+    try:
+        creds = get_credentials()
+        service = build("drive", "v3", credentials=creds)
+
+        request = service.files().export(
+            fileId=doc_id,
+            mimeType="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        )
+        fh = io.BytesIO()
+        downloader = MediaIoBaseDownload(fh, request)
+
+        done = False
+        while not done:
+            status, done = downloader.next_chunk()
+            if status:
+                logger.info(f"Download progress: {int(status.progress() * 100)}%")
+
+        fh.seek(0)
+        output_path = output_path or f"{doc_id}.docx"
+        with open(output_path, "wb") as f:
+            f.write(fh.read())
+
+        logger.info(f"Document saved to: {output_path}")
+        return output_path
+
+    except HttpError as error:
+        logger.error(f"Failed to download document: {error}")
+        raise
+
+    except Exception as e:
+        logger.error(f"Unexpected error: {e}")
+        raise
+
+
+if __name__ == "__main__":
+    doc_id = "1QMZHP3BWVHIBGkbAXf2pbiWYe0mpbuZB1EaU0Uf6uHE"
+    output_path = Path("test.docx")
+    download_doc(doc_id, output_path)
