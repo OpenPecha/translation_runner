@@ -1,5 +1,6 @@
 import io
 import os
+from pathlib import Path
 from typing import Dict, List, Optional
 
 from google.auth.transport.requests import Request
@@ -108,19 +109,13 @@ def create_google_doc(title: str, texts: List[str]) -> Optional[Dict[str, str]]:
     return None
 
 
-def download_doc(doc_id: str, output_path: Optional[str] = None) -> str:
+def download_doc(doc_id: str, output_path: str | Path):
     """
     Download a Google Doc as a .docx file and save it to disk.
 
     Args:
         doc_id (str): The ID of the Google Document to download.
-        output_path (Optional[str]): Optional file path to save the downloaded document.
-
-    Returns:
-        str: The path to the saved .docx file.
-
-    Raises:
-        Exception: If the document cannot be downloaded.
+        output_path (Path |str): File path to save the downloaded document.
     """
     try:
         creds = get_credentials()
@@ -158,4 +153,5 @@ def download_doc(doc_id: str, output_path: Optional[str] = None) -> str:
 
 if __name__ == "__main__":
     doc_id = "1QMZHP3BWVHIBGkbAXf2pbiWYe0mpbuZB1EaU0Uf6uHE"
-    download_doc(doc_id)
+    output_path = Path("test.docx")
+    download_doc(doc_id, output_path)
